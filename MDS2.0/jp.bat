@@ -1,0 +1,1 @@
+javap -classpath D:\Java\jdk1.5.0_06\lib\tools.jar %1

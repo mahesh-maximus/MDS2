@@ -1,0 +1,68 @@
+/*
+ * Title:        MDS
+ * Description:  New Desktop Environment for Windows
+ * Author:       Mahesh Dharmasena
+ * Version:      1.0
+ */
+ 
+
+#include <jni.h>          
+#include <stdio.h>
+#include "WinUI.h"
+#include <conio.h>
+#include <windows.h>
+
+extern "C"
+
+
+
+JNIEXPORT jboolean JNICALL Java_WinUI_findWindow(JNIEnv *env,jobject,  jstring jClazz, jstring jCaption){
+    const char* clazz=env->GetStringUTFChars(jClazz,0);
+    const char* caption=env->GetStringUTFChars(jCaption,0);
+    HWND wnd = FindWindow(clazz, caption);
+    boolean r = false;
+    if(wnd) {
+        r = true;
+    } else {
+        r = false;
+    }
+    env->ReleaseStringUTFChars(jClazz, clazz);
+    env->ReleaseStringUTFChars(jCaption, caption);
+    return r;
+}
+
+
+
+JNIEXPORT void JNICALL Java_WinUI_showWindow(JNIEnv *env,jobject, jstring jClazz, jstring jCaption){
+    const char* clazz=env->GetStringUTFChars(jClazz,0);
+    const char* caption=env->GetStringUTFChars(jCaption,0);
+    HWND wnd = FindWindow(clazz, caption);
+    ShowWindow(wnd, SW_RESTORE);
+    env->ReleaseStringUTFChars(jClazz, clazz);
+    env->ReleaseStringUTFChars(jCaption, caption);
+}
+
+
+
+JNIEXPORT void JNICALL Java_WinUI_sendMessage(JNIEnv *env,jobject, jstring jClazz, jstring jCaption, jstring jMsg){
+    const char* clazz=env->GetStringUTFChars(jClazz,0);
+    const char* caption=env->GetStringUTFChars(jCaption,0);
+    const char* msg=env->GetStringUTFChars(jMsg,0);
+
+    COPYDATASTRUCT cds;
+    cds.dwData = 3;
+    cds.cbData = sizeof(msg);
+    cds.lpData = &msg;
+    HWND wnd = FindWindow(clazz, caption);
+    SendMessage(wnd, WM_COPYDATA, 0,(LPARAM) (LPVOID) &cds);
+    env->ReleaseStringUTFChars(jClazz, clazz);
+    env->ReleaseStringUTFChars(jCaption, caption);
+    env->ReleaseStringUTFChars(jMsg, msg);
+}
+
+
+
+JNIEXPORT jlong JNICALL Java_WinUI_getValidationCode(JNIEnv*, jobject) {
+    return 948903;
+}
+
